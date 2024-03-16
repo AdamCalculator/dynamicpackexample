@@ -1,1 +1,12 @@
-
+{
+	"formatVersion": 1,
+	"build": 10,
+	"name": "dymanicpackexample",
+	"contents": [
+		{
+			"id": "test1",
+			"url": "content_test1.json",
+			"hash": "962fdc45d1cc1e214005f9f9baff360007e8402b"
+		}
+	]
+}
