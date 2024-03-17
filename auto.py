@@ -4,9 +4,20 @@ import hashlib
 from pathlib import Path
 import urllib.parse
 
+
 jrepo = None
 contents = {}
 files_registered = []
+convert_line_ending_rules = {
+    ".png": False,
+    ".jpg": False,
+    ".jpeg": False,
+    ".txt": True,
+    ".mcmeta": True,
+    ".json": True,
+    ".jem": True,
+    ".properties": True
+}
 
 
 def init_repo():
@@ -124,11 +135,6 @@ def remake_content():
 def main():
     global jrepo
     init_repo()
-    print("Repos:")
-    for x in contents:
-        print(" * ", x, contents[x])
-
-    print("REGISTERED FILES", files_registered)
 
     act = input("Enter action\n * [0] Add new content\n * [1] Recalculate hashes\n * [2] Preview changes (already "
                 "existed only)\n * [3] Find unassigned files with content\n * [4] Re-make content(quiz)\n\t\n -> ")
@@ -156,10 +162,40 @@ def main():
 
 def hash(file):
     if Path(file).exists():
-        return hashlib.sha1(open(file, "rb").read()).hexdigest()
+        # replacement strings
+        WINDOWS_LINE_ENDING = b'\r\n'
+        OLD_MAC_OS = b'\r'
+        UNIX_LINE_ENDING = b'\n'
+
+        with open(file, 'rb') as open_file:
+            content = open_file.read()
+
+        if is_convert_line_end(file):
+            # Windows ➡ Unix (before)
+            content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
+
+            # Old macos ➡ Unix
+            content = content.replace(OLD_MAC_OS, UNIX_LINE_ENDING)
+
+
+            with open(file, 'wb') as open_file:
+                open_file.write(content)
+
+        return hashlib.sha1(content).hexdigest()
 
     else:
         return ""
+
+
+def is_convert_line_end(file):
+    for x in convert_line_ending_rules:
+        if file.endswith(x):
+            return convert_line_ending_rules[x]
+
+    user = input("Convert CRLF -> LF for file types: " + file + "\n[Y/n] -> ")
+    bool = user == "Y" or user == "y"
+    return bool
+
 
 
 def get_filepaths(directory):
@@ -184,4 +220,5 @@ def get_filepaths(directory):
 # Run the above function and store its results in a variable.
 
 if __name__ == '__main__':
+    #is_convert_line_end("pack.mcmeta")
     main();
