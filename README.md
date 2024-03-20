@@ -1,4 +1,2 @@
-# Example dynamic-repo of DynamicPack mod
-
-## Tips
-* ~~Github uses LF. Convert all local files to LF from CRLF for correct hashes~~ now auto.py automaticaly converts files
+# ⚠️ Outdated! ⚠️
+### For example of DynamicPack repo see my [CursedEveryday](https://github.com/AdamCalculator/CursedEveryday) resourepack
